@@ -1,4 +1,4 @@
-package lxb.java.util;
+package io.lixibo.java.util;
 
 import org.junit.Test;
 
