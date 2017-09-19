@@ -1,10 +1,10 @@
-package io.lixibo.java.util;
+package org.nullhint.java.util;
 
 import org.junit.Test;
 
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class MyHashMapTest {
     @Test

@@ -1,7 +1,6 @@
-package io.lixibo.java.util;
+package org.nullhint.java.util;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
