@@ -1,7 +1,7 @@
 package org.nullhint.java.lang.reflect.staticproxy;
 
 /**
- * 调用测试类。
+ * 测试类。
  *
  * @author lixibo
  * @date 2017/9/20

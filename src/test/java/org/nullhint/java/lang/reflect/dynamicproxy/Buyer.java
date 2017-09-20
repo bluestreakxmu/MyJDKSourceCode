@@ -1,4 +1,6 @@
-package org.nullhint.java.lang.reflect.staticproxy;
+package org.nullhint.java.lang.reflect.dynamicproxy;
+
+import org.nullhint.java.lang.reflect.staticproxy.BuyInterface;
 
 /**
  * 真正的买家。
