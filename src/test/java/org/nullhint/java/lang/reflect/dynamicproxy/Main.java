@@ -11,10 +11,8 @@ import java.lang.reflect.Proxy;
  */
 public class Main {
     public static void main(String[] args) {
-        Buyer buyer = new Buyer();
-        InvocationHandler handler = new BuyHandler(buyer);
-
-        BuyInterface buyProxy = (BuyInterface) Proxy.newProxyInstance(buyer.getClass().getClassLoader(),
+        InvocationHandler handler = new BuyHandler(new Buyer());
+        BuyInterface buyProxy = (BuyInterface) Proxy.newProxyInstance(BuyInterface.class.getClassLoader(),
                 new Class<?>[]{BuyInterface.class}, handler);
         buyProxy.buyIPhoneX();
     }
