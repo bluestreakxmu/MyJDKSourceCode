@@ -10,6 +10,6 @@ public class Buyer implements BuyInterface {
 
     @Override
     public void buyIPhoneX() {
-        System.out.println("=====Buyer buy an iPhoneX...");
+        System.out.println("=====Buyer buys an iPhoneX...");
     }
 }
