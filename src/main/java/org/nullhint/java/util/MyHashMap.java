@@ -1,5 +1,7 @@
 package org.nullhint.java.util;
 
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -104,11 +106,47 @@ public class MyHashMap<K, V> implements Map<K, V> {
         return false;
     }
 
+    /**
+     * Returns the entry associated with the specified key in the
+     * HashMap.  Returns null if the HashMap contains no mapping
+     * for the key.
+     */
+    final Entry<K, V> getEntry(Object key) {
+        if (0 == size) {
+            return null;
+        }
+
+        // TODO
+
+        return null;
+    }
+
     public boolean containsValue(Object value) {
         return false;
     }
 
     public V get(Object key) {
+        // 对key=null的键值对做处理
+        if (null == key) {
+            return getForNullKey();
+        }
+        // 获取相应的Entry<K, V>
+        Entry<K, V> entry = getEntry(key);
+
+        return null == entry ? null : entry.value;
+    }
+
+    private V getForNullKey() {
+        if (0 == size) {
+            return null;
+        }
+
+        for (Entry<K, V> e = table[0]; e != null; e = e.next) {
+            if (e.key == null) {
+                return e.value;
+            }
+        }
+
         return null;
     }
 
@@ -117,14 +155,47 @@ public class MyHashMap<K, V> implements Map<K, V> {
             inflateTable(threshold);
         }
 
-        // deal with null key
+        // 对于key=null，放在数组index=0的Entry<K,V>链表上
+        if (key == null) {
+            return putForNullKey(value);
+        }
 
-
-        // rehash
+        // 对key重新hash，防止某些hash算法不完善造成更多的冲突
+        int hash = hash(key);
+        // 根据hash值获取该键值对在数组中的索引位置
+        int index = indexFor(hash, table.length);
 
         // find the right position in the entry table,
         // and if the map previously contained a mapping for the key, the old value is replaced.
+        for (Entry<K, V> e = table[index]; e != null; e = e.next) {
+            if (e.hash == hash && (e.key == key || e.key.equals(key))) {
+                V oldValue = e.value;
+                e.value = value;
+                return oldValue;
+            }
+        }
 
+        modCount++;
+        addEntry(hash, key, value, index);
+        return null;
+    }
+
+    /**
+     * 把key=null的键值对存入内部结构。<br>
+     * Note: key=null放在数组index=0的Entry<K,V>链表上。
+     */
+    private V putForNullKey(V value) {
+        // 已存在key=null的，替换为新值
+        for (Entry<K, V> e = table[0]; e != null; e = e.next) {
+            if (e.key == null) {
+                V oldValue = e.value;
+                e.value = value;
+                return oldValue;
+            }
+        }
+        modCount++;
+        // 不存在key=null的，插入新值
+        addEntry(0, null, value, 0);
         return null;
     }
 
@@ -205,11 +276,34 @@ public class MyHashMap<K, V> implements Map<K, V> {
     }
 
     /**
+     * Retrieve object hash code and applies a supplemental hash function to the
+     * result hash, which defends against poor quality hash functions.  This is
+     * critical because HashMap uses power-of-two length hash tables, that
+     * otherwise encounter collisions for hashCodes that do not differ
+     * in lower bits. Note: Null keys always map to hash 0, thus index 0.
+     */
+    final int hash(Object key) {
+        int h = this.hashSeed;
+        if (h != 0 && key instanceof String) {
+            return sun.misc.Hashing.stringHash32((String) key);
+        }
+
+        h ^= key.hashCode();
+
+        // This function ensures that hashCodes that differ only by
+        // constant multiples at each bit position have a bounded
+        // number of collisions (approximately 8 at default load factor).
+        h ^= (h >>> 20) ^ (h >>> 12);
+        return h ^ (h >>> 7) ^ (h >>> 4);
+    }
+
+    /**
      * Returns index for hash code h.
      */
     static int indexFor(int h, int length) {
-        // TODO
-        return 1;
+        // Note: 当length总是2的n次方时，h&(length-1)等价于h%length，但是&比%具有更高的效率
+        // FIXME 分析原理
+        return h & (length - 1);
     }
 
     //*******Entry start**************************************************

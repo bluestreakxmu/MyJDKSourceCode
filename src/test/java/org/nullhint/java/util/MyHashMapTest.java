@@ -10,8 +10,12 @@ public class MyHashMapTest {
     @Test
     public void testMyHashMap() throws Exception {
         Map<String, Object> map = new MyHashMap<String, Object>();
-        map.put("test", "Hello World!");
-        assertEquals("Hello World!", map.get("test"));
+        String value = "null key";
+        map.put(null, value);
+        assertEquals(value, map.get(null));
+        value = "Hello World!";
+        map.put("test", value);
+        assertEquals(value, map.get("test"));
     }
 
 }
