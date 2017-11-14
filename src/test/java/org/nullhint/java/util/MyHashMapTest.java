@@ -14,8 +14,8 @@ public class MyHashMapTest {
         map.put(null, value);
         assertEquals(value, map.get(null));
         value = "Hello World!";
-        map.put("test", value);
-        assertEquals(value, map.get("test"));
+        map.put("str", value);
+        assertEquals(value, map.get("str"));
     }
 
 }
